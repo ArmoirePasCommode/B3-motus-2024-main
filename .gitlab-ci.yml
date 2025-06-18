@@ -1,0 +1,30 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  PROJECT_ID: "ton-id-de-projet-gcp"
+  IMAGE: "gcr.io/$PROJECT_ID/b3-motus-2024-main"
+
+before_script:
+  - echo $GCLOUD_SERVICE_KEY | base64 -d > $CI_PROJECT_DIR/gcloud-service-key.json
+  - gcloud auth activate-service-account --key-file=$CI_PROJECT_DIR/gcloud-service-key.json
+  - gcloud --quiet config set project $PROJECT_ID
+  - gcloud --quiet auth configure-docker
+
+build:
+  stage: build
+  script:
+    - docker build -t $IMAGE:$CI_COMMIT_SHA .
+    - docker push $IMAGE:$CI_COMMIT_SHA
+
+deploy:
+  stage: deploy
+  script:
+    - gcloud run deploy b3-motus-2024-main \
+      --image $IMAGE:$CI_COMMIT_SHA \
+      --region europe-west1 \
+      --platform managed \
+      --allow-unauthenticated
+  only:
+    - main
