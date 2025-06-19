@@ -26,8 +26,6 @@ jobs:
       - name: Push image to Artifact Registry
         run: docker push europe-west9-docker.pkg.dev/cours-463409/motus/motus:latest
 
-      # Assurez-vous que ces secrets sont bien définis dans les paramètres GitHub du dépôt :
-      # GKE_CLUSTER_NAME, GKE_CLUSTER_LOCATION, GCP_PROJECT_ID
       - name: Get GKE credentials
         uses: google-github-actions/get-gke-credentials@v1
         with:
@@ -36,7 +34,20 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Deploy to GKE
+        run: kubectl apply -f kubernetes/
+
+      - name: Health check
+        env:
+          HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
         run: |
-          kubectl apply -f deployment.yml
-          kubectl apply -f service.yaml
-          kubectl apply -f ingress.yaml
+          for i in {1..10}; do
+            if curl -sf "$HEALTHCHECK_URL"; then
+              echo "Health check succeeded!"
+              exit 0
+            else
+              echo "Waiting for service..."
+              sleep 10
+            fi
+          done
+          echo "Health check failed!"
+          exit 1
