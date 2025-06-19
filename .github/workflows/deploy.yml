@@ -26,6 +26,8 @@ jobs:
       - name: Push image to Artifact Registry
         run: docker push europe-west9-docker.pkg.dev/cours-463409/motus/motus:latest
 
+      # Assurez-vous que ces secrets sont bien définis dans les paramètres GitHub du dépôt :
+      # GKE_CLUSTER_NAME, GKE_CLUSTER_LOCATION, GCP_PROJECT_ID
       - name: Get GKE credentials
         uses: google-github-actions/get-gke-credentials@v1
         with:
