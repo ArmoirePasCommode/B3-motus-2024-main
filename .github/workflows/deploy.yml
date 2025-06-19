@@ -25,3 +25,5 @@ jobs:
 
       - name: Push image to Artifact Registry
         run: docker push europe-west9-docker.pkg.dev/cours-463409/motus/motus:$GITHUB_SHA
+
+#coucou
