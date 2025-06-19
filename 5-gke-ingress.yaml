@@ -1,0 +1,10 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: motus-ingress
+spec:
+  defaultBackend:
+    service:
+      name: motus
+      port:
+        number: 8080

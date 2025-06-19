@@ -1,20 +1,11 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/mon-app:$SHORT_SHA', '.']
+    args: ['build', '-t', 'europe-west9-docker.pkg.dev/cours-463409/motus/motus:$SHORT_SHA', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/mon-app:$SHORT_SHA']
+    args: ['push', 'europe-west9-docker.pkg.dev/cours-463409/motus/motus:$SHORT_SHA']
 
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      [
-        'run', 'deploy', 'mon-app',
-        '--image', 'gcr.io/$PROJECT_ID/mon-app:$SHORT_SHA',
-        '--region', 'europe-west1',
-        '--platform', 'managed',
-        '--allow-unauthenticated'
-      ]
+  # Déploiement optionnel, à adapter selon votre cible (GKE, Cloud Run, etc.)
 
 images:
-  - 'gcr.io/$PROJECT_ID/mon-app:$SHORT_SHA'
+  - 'europe-west9-docker.pkg.dev/cours-463409/motus/motus:$SHORT_SHA'

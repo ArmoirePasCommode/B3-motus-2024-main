@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: motus
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: motus
+  template:
+    metadata:
+      labels:
+        app: motus
+    spec:
+      containers:
+      - name: motus
+        image: europe-west9-docker.pkg.dev/cours-463409/motus/motus:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+      imagePullSecrets:
+      - name: regsecret
