@@ -25,4 +25,16 @@ jobs:
 
       - name: Push image to Artifact Registry
         run: docker push europe-west9-docker.pkg.dev/cours-463409/motus/motus:latest
-#coucou
+
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
+          location: ${{ secrets.GKE_CLUSTER_LOCATION }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Deploy to GKE
+        run: |
+          kubectl apply -f deployment.yml
+          kubectl apply -f service.yaml
+          kubectl apply -f ingress.yaml
